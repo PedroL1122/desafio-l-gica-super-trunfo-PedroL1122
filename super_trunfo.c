@@ -1,100 +1,83 @@
 #include <stdio.h>
-#include <string.h>
 
-// Estrutura que representa uma carta do Super Trunfo
+// Estrutura para representar uma carta de cidade
 struct Carta {
-    char estado[30];
+    char estado[50];
     char codigo[10];
-    char nomeCidade[50];
+    char nome[50];
     int populacao;
     float area;
     float pib;
     int pontosTuristicos;
-    float densidadePopulacional;
-    float pibPerCapita;
 };
 
-// Função para cadastrar os dados de uma carta
+// Função para cadastrar uma carta
 void cadastrarCarta(struct Carta *carta) {
-    printf("\nCadastro de nova carta:\n");
+    printf("Digite o código da carta: ");
+    scanf("%s", carta->codigo);
 
-    printf("Estado: ");
-    fgets(carta->estado, sizeof(carta->estado), stdin);
-    strtok(carta->estado, "\n"); // Remover quebra de linha
+    printf("Digite o nome da cidade: ");
+    scanf(" %[^\n]", carta->nome); // para aceitar espaços
 
-    printf("Código da carta: ");
-    fgets(carta->codigo, sizeof(carta->codigo), stdin);
-    strtok(carta->codigo, "\n");
+    printf("Digite o estado: ");
+    scanf(" %[^\n]", carta->estado);
 
-    printf("Nome da cidade: ");
-    fgets(carta->nomeCidade, sizeof(carta->nomeCidade), stdin);
-    strtok(carta->nomeCidade, "\n");
-
-    printf("População: ");
+    printf("Digite a população: ");
     scanf("%d", &carta->populacao);
 
-    printf("Área (km²): ");
+    printf("Digite a área (em km²): ");
     scanf("%f", &carta->area);
 
-    printf("PIB (em milhões): ");
+    printf("Digite o PIB (em bilhões): ");
     scanf("%f", &carta->pib);
 
-    printf("Número de pontos turísticos: ");
+    printf("Digite o número de pontos turísticos: ");
     scanf("%d", &carta->pontosTuristicos);
-
-    // Cálculo da densidade populacional e PIB per capita
-    carta->densidadePopulacional = carta->populacao / carta->area;
-    carta->pibPerCapita = carta->pib / carta->populacao;
-
-    while (getchar() != '\n'); // Limpar o buffer
 }
 
 // Função para exibir os dados de uma carta
 void exibirCarta(struct Carta carta) {
-    printf("\n----------------------------\n");
-    printf("Cidade: %s (%s)\n", carta.nomeCidade, carta.estado);
+    printf("\n--- Dados da Cidade ---\n");
     printf("Código: %s\n", carta.codigo);
+    printf("Nome: %s\n", carta.nome);
+    printf("Estado: %s\n", carta.estado);
     printf("População: %d\n", carta.populacao);
     printf("Área: %.2f km²\n", carta.area);
-    printf("PIB: %.2f milhões\n", carta.pib);
+    printf("PIB: %.2f bilhões\n", carta.pib);
     printf("Pontos Turísticos: %d\n", carta.pontosTuristicos);
-    printf("Densidade Populacional: %.2f hab/km²\n", carta.densidadePopulacional);
-    printf("PIB per capita: %.6f\n", carta.pibPerCapita);
-    printf("----------------------------\n");
 }
 
-// Função que compara as cartas com base no PIB per capita
-void compararCartas(struct Carta c1, struct Carta c2) {
-    printf("\nComparação de cartas (Atributo: PIB per capita):\n\n");
-    printf("Carta 1 - %s: %.6f\n", c1.nomeCidade, c1.pibPerCapita);
-    printf("Carta 2 - %s: %.6f\n", c2.nomeCidade, c2.pibPerCapita);
+// Função para comparar cartas com base na densidade populacional
+void compararCartas(struct Carta a, struct Carta b) {
+    float densidadeA = a.populacao / a.area;
+    float densidadeB = b.populacao / b.area;
 
-    if (c1.pibPerCapita > c2.pibPerCapita) {
-        printf("\nResultado: Carta 1 (%s) venceu!\n", c1.nomeCidade);
-    } else if (c2.pibPerCapita > c1.pibPerCapita) {
-        printf("\nResultado: Carta 2 (%s) venceu!\n", c2.nomeCidade);
+    printf("\nComparando as cartas com base na DENSIDADE POPULACIONAL (menor valor vence):\n");
+    printf("Densidade da cidade 1 (%s): %.2f habitantes/km²\n", a.nome, densidadeA);
+    printf("Densidade da cidade 2 (%s): %.2f habitantes/km²\n", b.nome, densidadeB);
+
+    if (densidadeA < densidadeB) {
+        printf("🏆 A cidade vencedora é: %s (menor densidade populacional)\n", a.nome);
+    } else if (densidadeB < densidadeA) {
+        printf("🏆 A cidade vencedora é: %s (menor densidade populacional)\n", b.nome);
     } else {
-        printf("\nResultado: Empate!\n");
+        printf("⚖️ Empate! Ambas têm a mesma densidade populacional.\n");
     }
 }
 
 int main() {
-    struct Carta carta1, carta2;
+    struct Carta cidade1, cidade2;
 
-    printf("Bem-vindo ao Super Trunfo de Cidades!\n");
+    printf("Cadastro da carta da CIDADE 1:\n");
+    cadastrarCarta(&cidade1);
 
-    // Cadastro da primeira carta
-    cadastrarCarta(&carta1);
+    printf("\nCadastro da carta da CIDADE 2:\n");
+    cadastrarCarta(&cidade2);
 
-    // Cadastro da segunda carta
-    cadastrarCarta(&carta2);
+    exibirCarta(cidade1);
+    exibirCarta(cidade2);
 
-    // Exibição das cartas
-    exibirCarta(carta1);
-    exibirCarta(carta2);
-
-    // Comparação entre as cartas
-    compararCartas(carta1, carta2);
+    compararCartas(cidade1, cidade2);
 
     return 0;
 }
